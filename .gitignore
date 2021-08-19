@@ -1,0 +1,11 @@
+#Ignore node_modules folder
+frontend/node_modules
+
+#Ignore dist folder
+frontend/dist
+
+#Ignore .idea folder
+.idea
+
+#Ignore coverage folder
+frontend/coverage
