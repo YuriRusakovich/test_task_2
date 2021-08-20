@@ -14,7 +14,7 @@ interface ColumnFilterOptions {
 
 interface User {
     id: string,
-    photoUrl: string,
+    photo: string,
     name: string,
     login: string,
     email: string,

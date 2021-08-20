@@ -25,22 +25,10 @@ const { usersSuccess, startLoading } = slice.actions;
 export const fetchUsers = () => async (dispatch: Dispatch) => {
     dispatch(startLoading());
     try {
-        await api.get(
-            '/api/?results=25&seed=abc&inc=name,' +
-            'login,email,phone,id,picture')
+        await api.get('/users')
             .then((response) => {
-                const users: User[] = response.data.results.map((item: any) => {
-                    return {
-                        id: item.id.value,
-                        photoUrl: item.picture.thumbnail,
-                        name: `${item.name.first} ${item.name.last}`,
-                        login: item.login.username,
-                        email: item.email,
-                        phone: item.phone,
-                        rating: 0
-                    };
-                });
-                return dispatch(usersSuccess(users));
+                console.log(response.data);
+                return dispatch(usersSuccess(response.data));
             });
     }
     catch (e) {

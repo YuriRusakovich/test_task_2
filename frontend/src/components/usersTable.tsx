@@ -166,7 +166,7 @@ function UserTable(): JSX.Element {
                 columns: [
                     {
                         Header: 'Photo',
-                        accessor: 'photoUrl',
+                        accessor: 'photo',
                         disableSortBy: true,
                         disableFilters: true
                     },
