@@ -9,6 +9,7 @@ module.exports = {
     moduleNameMapper: {
         "@components(.*)": "<rootDir>/src/components/$1",
         "@services(.*)": "<rootDir>/src/services/$1",
-        "@redux(.*)": "<rootDir>/src/app/$1"
+        "@redux(.*)": "<rootDir>/src/app/$1",
+        "@pages(.*)": "<rootDir>/src/pages/$1"
     }
 }

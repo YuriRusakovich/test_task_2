@@ -17,12 +17,14 @@ const config = {
     output: {
         path: resolve(__dirname, "dist"),
         filename: "bundle.js",
+        publicPath: '/'
     },
     resolve: {
         alias: {
             "@components": resolve(__dirname, './src/components'),
             "@services": resolve(__dirname, './src/services'),
-            "@redux": resolve(__dirname, './src/app')
+            "@redux": resolve(__dirname, './src/app'),
+            "@pages": resolve(__dirname, './src/pages')
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"]
     },
@@ -62,6 +64,7 @@ if (isProd) {
         compress: true,
         stats: "errors-only",
         overlay: true,
+        historyApiFallback: true,
     };
 }
 

@@ -14,7 +14,8 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@services/*": ["src/services/*"],
-      "@redux/*": ["src/app/*"]
+      "@redux/*": ["src/app/*"],
+      "@pages/*": ["src/pages/*"]
     }
   },
   "include": [

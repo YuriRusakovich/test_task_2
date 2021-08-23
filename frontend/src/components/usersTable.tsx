@@ -1,9 +1,13 @@
-import React, {useEffect} from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { useTable, useSortBy, Row, useFilters } from 'react-table';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "@redux/users";
 import { RootState } from "@redux/rootReducer";
+import ImageCell from "@components/cells/imageCell";
+import DefaultCell from "@components/cells/defaultCell";
+import LinkCell from "@components/cells/linkCell";
+import RatingCell from "@components/cells/ratingCell";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -43,6 +47,17 @@ const Styles = styled.div`
       :last-child {
         border-right: 0;
       }
+    }
+  }
+`;
+
+const TR = styled.tr`
+  ${(props:TrProps) => props.rating && css`
+        background: antiquewhite;
+      `}
+  :last-child {
+    td {
+      border-bottom: 0;
     }
   }
 `;
@@ -87,8 +102,6 @@ function Table({ columns, data }: TableOptions): JSX.Element {
         useSortBy
     );
 
-    const firstPageRows = rows.slice(0, 20);
-
     return (
         <>
             <table {...getTableProps()}>
@@ -119,29 +132,40 @@ function Table({ columns, data }: TableOptions): JSX.Element {
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {firstPageRows.map(
+                    {rows.map(
                         (row:Row) => {
                             prepareRow(row);
+                            const user = row.original as User;
                             return (
-                                <tr {...row.getRowProps()}>
+                                <TR {...row.getRowProps()}
+                                    rating={(user.rating && user.rating <= -3)}>
                                     {row.cells.map(cell => {
                                         if (cell.column.Header === 'Photo') {
-                                            return (
-                                                <td {...cell.getCellProps()}>
-                                                    <img
-                                                        src={cell.value}
-                                                        alt=''
-                                                    />
-                                                </td>
-                                            );
+                                            return (<ImageCell
+                                                cell={cell}
+                                                key={cell.value}
+                                            />);
                                         }
-                                        return (
-                                            <td {...cell.getCellProps()}>
-                                                {cell.render('Cell')}
-                                            </td>
-                                        );
+                                        if (cell.column.Header === 'Name') {
+                                            return (<LinkCell
+                                                cell={cell}
+                                                user={row.original as User}
+                                                key={cell.value}
+                                            />);
+                                        }
+                                        if (cell.column.Header === 'Rating') {
+                                            return (<RatingCell
+                                                cell={cell}
+                                                user={row.original as User}
+                                                key={cell.value}
+                                            />);
+                                        }
+                                        return (<DefaultCell
+                                            cell={cell}
+                                            key={cell.value}
+                                        />);
                                     })}
-                                </tr>
+                                </TR>
                             );}
                     )}
                 </tbody>
@@ -156,8 +180,10 @@ function UserTable(): JSX.Element {
         state.users);
 
     useEffect(() => {
-        dispatch(fetchUsers());
-    }, [dispatch]);
+        if (!users.length) {
+            dispatch(fetchUsers());
+        }
+    }, [users, dispatch]);
 
     const columns = React.useMemo(
         () => [

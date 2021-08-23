@@ -11,19 +11,12 @@ const pool = new Pool({
 
 const createUsers = async (response, body) => {
     const parsedBody = JSON.parse(body);
-    const users = await parsedBody.results.map((item) => {
+    return await parsedBody.results.map((item) => {
         const user = prepareUser(item);
         const { queryString, values } = setUser(user);
-        pool.query(queryString, values, (error, result) => {
-            if (error) {
-                throw error;
-            }
-            console.log(result);
-        });
+        pool.query(queryString, values);
         return user;
     });
-
-    response.status(200).send(users);
 };
 
 const getUsers = (req, res) => {

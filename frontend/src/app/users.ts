@@ -27,7 +27,6 @@ export const fetchUsers = () => async (dispatch: Dispatch) => {
     try {
         await api.get('/users')
             .then((response) => {
-                console.log(response.data);
                 return dispatch(usersSuccess(response.data));
             });
     }

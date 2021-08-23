@@ -1,21 +1,21 @@
 {
-  "name": "backend",
+  "name": "test_task_2_backend",
   "version": "1.0.0",
   "description": "nodejs+express",
   "main": "index.js",
   "scripts": {
     "serve": "node index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuriRusakovich/test_task_2.git"
+  },
   "author": "Yury Rusakovich",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "module-alias": "^2.2.2",
     "pg": "^8.7.1",
-    "request": "^2.88.2"
-  },
-  "_moduleAliases": {
-    "@db": "./db",
-    "@utils": "./utils"
+    "request": "^2.88.2",
+    "winston": "^3.3.3"
   }
 }

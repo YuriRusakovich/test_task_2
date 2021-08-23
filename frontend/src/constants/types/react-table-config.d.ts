@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler } from 'react';
 import {
     TableInstance,
     UseColumnOrderInstanceProps,
@@ -42,7 +42,7 @@ import {
     UseSortByInstanceProps,
     UseSortByOptions,
     UseSortByState,
-} from 'react-table'
+} from 'react-table';
 
 declare module 'react-table' {
     export interface UseFlexLayoutInstanceProps<D extends Record<string, unknown>> {

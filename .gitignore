@@ -10,3 +10,6 @@ frontend/dist
 
 #Ignore coverage folder
 frontend/coverage
+
+#Ignore logs folder
+backend/logs
