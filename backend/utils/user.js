@@ -1,4 +1,4 @@
-const prepareUser = (item) => {
+module.exports = (item) => {
     return {
         name: `${item.name.first} ${item.name.last}`,
         photo: item.picture.thumbnail,
@@ -8,8 +8,4 @@ const prepareUser = (item) => {
         phone: item.phone,
         rating: 0
     };
-};
-
-module.exports = {
-    prepareUser,
 };
