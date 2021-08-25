@@ -1,65 +1,88 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTable, useSortBy, Row, useFilters } from 'react-table';
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@redux/users";
-import { RootState } from "@redux/rootReducer";
 import ImageCell from "@components/cells/imageCell";
 import DefaultCell from "@components/cells/defaultCell";
 import LinkCell from "@components/cells/linkCell";
 import RatingCell from "@components/cells/ratingCell";
+import {
+    ArrowSortedUp,
+    ArrowSortedDown,
+    ArrowUnsorted
+} from "@styled-icons/typicons";
 
-const Styles = styled.div`
-  padding: 1rem;
-  
-  .errorContainer {
+interface Props {
+    users: User[],
+    isLoading: boolean,
+    title: string
+}
+
+const LoadingContainer = styled.div`
     margin: 0 auto;
     display: table;
-  }
-  
-  img {
-    margin: 0 auto;
-    display: flex;
-  }
+`;
 
-  table {
+const PageWrapper = styled.div`
+    padding: 1rem;
+`;
+
+const MainTable = styled.table`
     border-spacing: 0;
     margin: 0 auto;
     border: 1px solid black;
     border-radius: 5px;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      text-align: center;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
 `;
 
-const TR = styled.tr`
-  ${(props:TrProps) => props.rating && css`
-        background: antiquewhite;
-      `}
-  :last-child {
-    td {
-      border-bottom: 0;
+const TableHeader = styled.th`
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    text-align: center;
+
+    :last-child {
+      border-right: 0;
     }
-  }
+`;
+
+const TableSort = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+`;
+
+const TableSortUp = styled(ArrowSortedUp)`
+    color: burlywood;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+`;
+
+const TableSortDown = styled(ArrowSortedDown)`
+    color: burlywood;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+`;
+
+const TableUnsorted = styled(ArrowUnsorted)`
+    color: burlywood;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+`;
+
+const TableRow = styled.tr`
+    ${(props:TableRowProps) => props.rating && css`
+        background: antiquewhite;
+    `}
+    
+    :last-child {
+        td {
+            border-bottom: 0;
+        }
+    }
 `;
 
 function DefaultColumnFilter(
@@ -104,31 +127,32 @@ function Table({ columns, data }: TableOptions): JSX.Element {
 
     return (
         <>
-            <table {...getTableProps()}>
+            <MainTable {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
+                        <TableRow {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>
-                                    <div {...column
+                                <TableHeader {...column.getHeaderProps()}>
+                                    <TableSort {...column
                                         .getSortByToggleProps()}>
                                         {column.render('Header')}
-                                        <span>
-                                            {column.isSorted
-                                                ? column.isSortedDesc
-                                                    ? ' 🔽'
-                                                    : ' 🔼'
-                                                : ''}
-                                        </span>
-                                    </div>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? <TableSortDown />
+                                                : <TableSortUp />
+                                            : column.canSort
+                                                ? <TableUnsorted />
+                                                : ''
+                                        }
+                                    </TableSort>
                                     <div>
                                         {column.canFilter ?
                                             column.render('Filter') :
                                             null}
                                     </div>
-                                </th>
+                                </TableHeader>
                             ))}
-                        </tr>
+                        </TableRow>
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
@@ -137,7 +161,7 @@ function Table({ columns, data }: TableOptions): JSX.Element {
                             prepareRow(row);
                             const user = row.original as User;
                             return (
-                                <TR {...row.getRowProps()}
+                                <TableRow {...row.getRowProps()}
                                     rating={(user.rating && user.rating <= -3)}>
                                     {row.cells.map(cell => {
                                         if (cell.column.Header === 'Photo') {
@@ -165,69 +189,70 @@ function Table({ columns, data }: TableOptions): JSX.Element {
                                             key={cell.value}
                                         />);
                                     })}
-                                </TR>
+                                </TableRow>
                             );}
                     )}
                 </tbody>
-            </table>
+            </MainTable>
         </>
     );
 }
 
-function UserTable(): JSX.Element {
-    const dispatch = useDispatch();
-    const { users, isLoading } = useSelector((state: RootState) =>
-        state.users);
-
-    useEffect(() => {
-        if (!users.length) {
-            dispatch(fetchUsers());
-        }
-    }, [users, dispatch]);
-
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'Users',
-                columns: [
-                    {
-                        Header: 'Photo',
-                        accessor: 'photo',
-                        disableSortBy: true,
-                        disableFilters: true
-                    },
-                    {
-                        Header: 'Name',
-                        accessor: 'name',
-                    },
-                    {
-                        Header: 'Login',
-                        accessor: 'login'
-                    },
-                    {
-                        Header: 'Email',
-                        accessor: 'email'
-                    },
-                    {
-                        Header: 'Phone',
-                        accessor: 'phone'
-                    },
-                    {
-                        Header: 'Rating',
-                        accessor: 'rating'
-                    },
-                ],
+const UserTable: React.FC<Props> =
+    ({users, isLoading, title}) => {
+        const numberSort = React.useMemo(
+            () => (rowA:Row, rowB:Row, columnId:string) => {
+                const a = parseFloat(rowA.values[columnId]);
+                const b = parseFloat(rowB.values[columnId]);
+                return a > b ? 1 : -1;
             },
-        ],
-        []
-    );
+            []
+        );
 
-    return (
-        <Styles>
-            {isLoading && <div className="errorContainer">Loading... </div>}
-            {!isLoading && <Table columns={columns} data={users} />}
-        </Styles>
-    );
-}
+        const columns = React.useMemo(
+            () => [
+                {
+                    Header: title,
+                    columns: [
+                        {
+                            Header: 'Photo',
+                            accessor: 'photo',
+                            disableSortBy: true,
+                            disableFilters: true
+                        },
+                        {
+                            Header: 'Name',
+                            accessor: 'name',
+                        },
+                        {
+                            Header: 'Login',
+                            accessor: 'login'
+                        },
+                        {
+                            Header: 'Email',
+                            accessor: 'email'
+                        },
+                        {
+                            Header: 'Phone',
+                            accessor: 'phone'
+                        },
+                        {
+                            Header: 'Rating',
+                            accessor: 'rating',
+                            sortType: numberSort
+                        }
+                    ],
+                },
+            ],
+            [numberSort, title]
+        );
+
+        return (
+            <PageWrapper>
+                {isLoading && <LoadingContainer>Loading... </LoadingContainer>}
+                {!isLoading && <Table columns={columns} data={users} />}
+            </PageWrapper>
+        );
+    };
 
 export default UserTable;

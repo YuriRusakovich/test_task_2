@@ -31,7 +31,7 @@ app.use((err,req,res,next) => {
     logger.error(`${err.status || 500} - ${res.statusMessage} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
 })
 
-// Capture 404 erors
+// Capture 404 errors
 app.use((req,res,next) => {
     res.status(404).send("Page not found");
     logger.error(`404 || ${res.statusMessage} - ${req.originalUrl} - ${req.method} - ${req.ip}`);

@@ -8,25 +8,36 @@ interface Props {
     user: User
 }
 
-const Styles = styled.div`    
-  a {
-    text-decoration: none;
-    color: darkblue;
-  }
+const TableCell = styled.td`
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    text-align: center;
+  
+    :last-child {
+        border-right: 0;
+    }
+
+    a {
+        text-decoration: none;
+        color: sandybrown;
+        :hover {
+            color: burlywood;
+        }
+    }
 `;
 
-const LinkCell: React.FC<Props> = ({cell, user}) => {
-    return(<td {...cell.getCellProps()}>
-        <Styles>
-            <Link to={{
-                pathname: `/user/${user.id}`,
-                state: { user: user }
 
-            }}>
-                {cell.value}
-            </Link>
-        </Styles>
-    </td>);
+const LinkCell: React.FC<Props> = ({cell, user}) => {
+    return(<TableCell {...cell.getCellProps()}>
+        <Link to={{
+            pathname: `/user/${user.id}`,
+            state: { user: user }
+        }}>
+            {cell.value}
+        </Link>
+    </TableCell>);
 };
 
 export default LinkCell;

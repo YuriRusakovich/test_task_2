@@ -1,9 +1,10 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import RatingCounter from "@components/ratingCounter";
+import DeleteUserButton from "@components/deleteUserButton";
 
 interface Props {
-    user: User;
+    user: User | undefined;
 }
 
 const CardWrapper = styled.div`
@@ -12,7 +13,7 @@ const CardWrapper = styled.div`
     margin: 48px auto 0;
     width: 500px;
     font-family: Quicksand, arial, sans-serif;
-    box-shadow: 0 0 20px rgba(0, 0, 0, .05), 0 0px 40px rgba(0, 0, 0, .08);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .05), 0 0 40px rgba(0, 0, 0, .08);
     border-radius: 5px;
 `;
 
@@ -29,7 +30,7 @@ const CardHeading = styled.h1`
 
 const CardImage = styled.img`
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, .05), 0 0px 40px rgba(0, 0, 0, .08);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .05), 0 0 40px rgba(0, 0, 0, .08);
 `;
 
 const CardContent = styled.div`
@@ -66,49 +67,60 @@ const CardRating = styled.div`
 
 const UserCard: React.FC<Props> = ({user}) => {
     return(
-        <CardWrapper>
-            <CardHeader>
-                <CardImage src={user.large_photo} alt=""/>
-                <CardContent>
-                    <CardHeading>{user.name}</CardHeading>
-                    <CardRow>
-                        <CardRowContent bold>
-                            Login:
-                        </CardRowContent>
-                        <CardRowContent>
-                            {user.login}
-                        </CardRowContent>
-                    </CardRow>
-                </CardContent>
-            </CardHeader>
-            <CardBody>
-                <CardHeading>
-                    Contacts
-                </CardHeading>
-                <CardRow>
-                    <CardRowContent bold>
-                        Email:
-                    </CardRowContent>
-                    <CardRowContent>
-                        {user.email}
-                    </CardRowContent>
-                </CardRow>
-                <CardRow>
-                    <CardRowContent bold>
-                        Phone:
-                    </CardRowContent>
-                    <CardRowContent>
-                        {user.phone}
-                    </CardRowContent>
-                </CardRow>
-                <CardHeading>
-                    Rating
-                </CardHeading>
-                <CardRating>
-                    <RatingCounter user={user}/>
-                </CardRating>
-            </CardBody>
-        </CardWrapper>
+        <>
+            {user &&
+                <CardWrapper>
+                    <CardHeader>
+                        <CardImage src={user.large_photo} alt=""/>
+                        <CardContent>
+                            <CardHeading>{user.name}</CardHeading>
+                            <CardRow>
+                                <CardRowContent bold>
+                                    Login:
+                                </CardRowContent>
+                                <CardRowContent>
+                                    {user.login}
+                                </CardRowContent>
+                            </CardRow>
+                        </CardContent>
+                    </CardHeader>
+                    <CardBody>
+                        <hr/>
+                        <CardHeading>
+                            Contacts
+                        </CardHeading>
+                        <CardRow>
+                            <CardRowContent bold>
+                                Email:
+                            </CardRowContent>
+                            <CardRowContent>
+                                {user.email}
+                            </CardRowContent>
+                        </CardRow>
+                        <CardRow>
+                            <CardRowContent bold>
+                                Phone:
+                            </CardRowContent>
+                            <CardRowContent>
+                                {user.phone}
+                            </CardRowContent>
+                        </CardRow>
+                        <hr/>
+                        <CardHeading>
+                            Rating
+                        </CardHeading>
+                        <CardRating>
+                            <RatingCounter user={user}/>
+                        </CardRating>
+                        <hr/>
+                        <CardHeading>
+                            Actions
+                        </CardHeading>
+                        <DeleteUserButton user={user}/>
+                    </CardBody>
+                </CardWrapper>
+            }
+        </>
     );
 };
 

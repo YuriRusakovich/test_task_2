@@ -2,15 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const Styles = styled.div`    
-  a {
-    text-decoration: none;
-    color: black;
-  }
-  li:hover {
-    background: aliceblue;
-  }
-  ul {
+const Navigation = styled.ul`
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -18,9 +10,9 @@ const Styles = styled.div`
     margin: 0;
     padding: 0;
     justify-content: center;
-  }
-  
-  li {
+`;
+
+const NavigationItem = styled.li`
     flex: 0 0 auto;
     -webkit-box-align: center;
     -webkit-box-pack: center;
@@ -39,18 +31,32 @@ const Styles = styled.div`
     white-space: nowrap;
     border: 2px solid black;
     border-radius: 5px;
-  }
+  
+    :hover {
+      background: bisque;
+    }
+  
+    a {
+      text-decoration: none;
+      color: black;
+    }
 `;
 
 
 const Header: React.FC = () => {
     return(
-        <Styles>
-            <ul>
-                <li><Link to="/users">Users</Link></li>
-                <li><Link to="/leaders">Leaders</Link></li>
-            </ul>
-        </Styles>
+        <Navigation>
+            <NavigationItem>
+                <Link to="/users">
+                    Users
+                </Link>
+            </NavigationItem>
+            <NavigationItem>
+                <Link to="/leaders">
+                    Leaders
+                </Link>
+            </NavigationItem>
+        </Navigation>
     );
 };
 

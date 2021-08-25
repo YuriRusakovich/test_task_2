@@ -19,16 +19,21 @@ interface User {
     login: string,
     email: string,
     phone: string,
-    rating?: number,
+    rating: number,
     large_photo?: string
 }
-
-interface LocationUserState { user: User }
 
 interface SpanProps {
     bold?: boolean
 }
 
-interface TrProps {
+interface TableRowProps {
     rating?: boolean | undefined | 0;
+}
+
+interface InitialState {
+    users: User[],
+    isLoading: boolean,
+    fetchAllCalled: boolean,
+    fetchOneCalled: boolean
 }

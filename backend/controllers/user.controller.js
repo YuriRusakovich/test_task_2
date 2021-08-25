@@ -36,14 +36,50 @@ exports.findAll = (req, res, next) => {
             .catch(err => next(err));
 };
 
-exports.findOne = (req, res) => {
+exports.findOne = (req, res, next) => {
+    const id = req.params.id;
 
+    User.findByPk(id)
+        .then(data => {
+            res.send(data);
+            logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+        })
+        .catch(err => next(err));
 };
 
-exports.update = (req, res) => {
+exports.update = (req, res, next) => {
+    const updateValues = req.body;
+    const id = req.params.id;
 
+    User.update(updateValues, {
+        where: { id: id },
+        returning: true,
+        plain: true
+    })
+        .then((self) => {
+            res.send({
+                result: self[1].dataValues,
+                message: 'User succesfully updated.'
+            });
+            logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+        })
+        .catch(err => next(err));
 };
 
-exports.delete = (req, res) => {
+exports.delete = (req, res, next) => {
+    const id = req.params.id;
 
+    User.findByPk(id)
+        .then((data) => {
+            User.destroy({ where: { id: id }})
+                .then(() => {
+                    res.send({
+                        result: data,
+                        message: 'User succesfully deleted.'
+                    });
+                    logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+                })
+                .catch(err => next(err));
+            })
+        .catch(err => next(err));
 };
