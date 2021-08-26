@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { updateUser } from "@redux/users";
+import { updateUser } from "@reduxStore/users";
 import { Plus, Minus } from "@styled-icons/typicons";
 
 interface Props {
@@ -60,11 +60,17 @@ const RatingCounter: React.FC<Props> = ({user}) => {
 
     return(
         <RatingCounterWrapper>
-            <MinusButton onClick={decrement} />
-            <RatingCounterText>
+            <MinusButton
+                onClick={decrement}
+                data-testid={`decrement-${user.id}`}
+            />
+            <RatingCounterText data-testid={`rating-counter-${user.id}`}>
                 {rating}
             </RatingCounterText>
-            <PlusButton onClick={increment} />
+            <PlusButton
+                onClick={increment}
+                data-testid={`increment-${user.id}`}
+            />
         </RatingCounterWrapper>
     );
 };

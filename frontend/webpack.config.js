@@ -23,7 +23,7 @@ const config = {
         alias: {
             "@components": resolve(__dirname, './src/components'),
             "@services": resolve(__dirname, './src/services'),
-            "@redux": resolve(__dirname, './src/app'),
+            "@reduxStore": resolve(__dirname, './src/app'),
             "@pages": resolve(__dirname, './src/pages')
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"]

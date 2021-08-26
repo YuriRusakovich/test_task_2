@@ -7,7 +7,7 @@ const logger = require('./logger');
 const app = express()
 const port = process.env.PORT;
 const corsOptions = {
-    origin: 'http://localhost:9000',
+    origin: ['http://localhost:9000', 'http://localhost']
 };
 
 app.use(cors(corsOptions));

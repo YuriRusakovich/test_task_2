@@ -23,7 +23,9 @@ const slice = createSlice({
             state.fetchAllCalled = true;
         },
         userSuccess: (state, action) => {
-            if (action.payload) {
+            const existingUser = action.payload ? state.users
+                .find((user) => user.id === action.payload.id) : null;
+            if (!existingUser && action.payload) {
                 state.users.push(action.payload);
             }
             state.fetchOneCalled = true;

@@ -11,29 +11,29 @@ const create = async (item, next) => {
 };
 
 exports.findAll = (req, res, next) => {
-        User.findAll()
-            .then(data => {
-                if (data.length) {
-                    res.send(data);
-                } else {
-                    request(`${baseUrl}/api/?results=25&seed=abc&inc=name,
-                    login,email,phone,picture`, async (error,
-                        response, body) => {
-                        const parsedBody = JSON.parse(body);
-                        for (let item of parsedBody.results) {
-                            const user = prepareUser(item);
-                            await create(user, next);
-                        }
-                        User.findAll()
-                            .then(data => {
-                                res.send(data);
-                            })
-                            .catch(err => next(err));
-                    });
-                }
-                logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-            })
-            .catch(err => next(err));
+    User.findAll()
+        .then(data => {
+            if (data.length) {
+                res.send(data);
+            } else {
+                request(`${baseUrl}/api/?results=25&seed=abc&inc=name,
+                login,email,phone,picture`, async (error,
+                    response, body) => {
+                    const parsedBody = JSON.parse(body);
+                    for (const item of parsedBody.results) {
+                        const user = prepareUser(item);
+                        await create(user, next);
+                    }
+                    User.findAll()
+                        .then(data => {
+                            res.send(data);
+                        })
+                        .catch(err => next(err));
+                });
+            }
+            logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+        })
+        .catch(err => next(err));
 };
 
 exports.findOne = (req, res, next) => {
@@ -80,6 +80,6 @@ exports.delete = (req, res, next) => {
                     logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
                 })
                 .catch(err => next(err));
-            })
+        })
         .catch(err => next(err));
 };

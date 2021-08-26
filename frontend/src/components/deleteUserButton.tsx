@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { UserDelete } from "@styled-icons/typicons";
-import { deleteUser } from "@redux/users";
+import { deleteUser } from "@reduxStore/users";
 import { useHistory } from "react-router-dom";
 
 interface Props {
@@ -29,7 +29,10 @@ const DeleteUserButton: React.FC<Props> = ({user}) => {
         history.push('/users');
     };
 
-    return(<DeleteButton onClick={deleteUserById} />);
+    return(<DeleteButton
+        onClick={deleteUserById}
+        data-testid={`delete-${user.id}`}
+    />);
 };
 
 export default DeleteUserButton;

@@ -133,8 +133,10 @@ function Table({ columns, data }: TableOptions): JSX.Element {
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
                                 <TableHeader {...column.getHeaderProps()}>
-                                    <TableSort {...column
-                                        .getSortByToggleProps()}>
+                                    <TableSort
+                                        {...column.getSortByToggleProps()}
+                                        data-testid={`${column.id}-sort`}
+                                    >
                                         {column.render('Header')}
                                         {column.isSorted
                                             ? column.isSortedDesc
@@ -145,7 +147,7 @@ function Table({ columns, data }: TableOptions): JSX.Element {
                                                 : ''
                                         }
                                     </TableSort>
-                                    <div>
+                                    <div data-testid={`${column.id}-filter`}>
                                         {column.canFilter ?
                                             column.render('Filter') :
                                             null}

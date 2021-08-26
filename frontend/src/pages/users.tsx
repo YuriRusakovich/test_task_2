@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import UserTable from "@components/usersTable";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@redux/rootReducer";
-import { fetchUsers } from "@redux/users";
+import { RootState } from "@reduxStore/rootReducer";
+import { fetchUsers } from "@reduxStore/users";
 
 const Users: React.FC = () => {
     const dispatch = useDispatch();
