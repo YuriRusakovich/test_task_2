@@ -4,9 +4,12 @@
   "description": "nodejs+express",
   "main": "server.js",
   "scripts": {
-    "serve": "node server.js",
+    "serve": "cross-env NODE_ENV=development node -r esm server.js",
     "lint": "eslint --ext .js models config controllers routes utils",
-    "db:create": "sequelize-cli db:create"
+    "test": "cross-env NODE_ENV=test experimental-vm-modules=true jest --runInBand",
+    "db:create": "sequelize-cli db:create",
+    "testdb:create": "cross-env NODE_ENV=test sequelize-cli db:create",
+    "test:db": "concurrently \"npm run testdb:create\" \"npm run test\""
   },
   "repository": {
     "type": "git",
@@ -16,6 +19,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
@@ -27,7 +31,15 @@
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/eslint-parser": "^7.15.0",
+    "@types/jest": "^27.0.1",
+    "@types/sequelize": "^4.28.10",
+    "babel-jest": "^27.1.0",
+    "babel-preset-env": "^1.7.0",
+    "concurrently": "^6.2.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
-    "eslint-plugin-import": "^2.24.2"
+    "eslint-plugin-import": "^2.24.2",
+    "jest": "^27.0.6",
+    "supertest": "^6.1.6"
   }
 }

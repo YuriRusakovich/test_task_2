@@ -5,6 +5,7 @@ import {
     cleanup
 } from "@testing-library/react";
 import App from "./app";
+import {fetchUsers} from "@reduxStore/users";
 
 beforeEach(() => {
     render(<App />);

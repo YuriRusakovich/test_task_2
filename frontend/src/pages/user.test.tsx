@@ -9,6 +9,7 @@ import User from "@pages/user";
 import wrapComponent from '@services/wrapComponent';
 import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "@reduxStore/rootReducer";
+import {deleteUser, fetchUsers} from "@reduxStore/users";
 
 describe("User Page", () => {
     it("should render User page", async () => {
@@ -65,10 +66,17 @@ describe("User Page", () => {
         });
     });
 
-    it("should not render page without id", () => {
+    it("should delete user by id", async () => {
         const store = configureStore({reducer: rootReducer});
-        render(wrapComponent(User));
-        const users = store.getState().users.users;
-        expect(users).toHaveLength(0);
+        await store.dispatch(fetchUsers());
+        let usersLength = await waitFor(() => store.getState().users.users.length);
+        render(wrapComponent(User, store, {id: `${usersLength}`}));
+        const deleteButton = await waitFor(() =>
+            screen.getByTestId(`delete-${usersLength}`));
+        expect(deleteButton).toBeInTheDocument();
+        fireEvent.click(deleteButton);
+        await store.dispatch(deleteUser(usersLength));
+        const usersLengthAfterDelete = await waitFor(() => store.getState().users.users.length);
+        expect(usersLengthAfterDelete).toBe(usersLength - 1);
     });
 });

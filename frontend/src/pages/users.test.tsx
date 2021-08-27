@@ -25,6 +25,7 @@ describe("Users Page", () => {
             screen.getByTestId('rating-sort'));
         expect(sortByRating).toBeInTheDocument();
         fireEvent.click(sortByRating);
+        fireEvent.click(sortByRating);
     });
 
     it("should filter table by name", async () => {
@@ -35,5 +36,7 @@ describe("Users Page", () => {
         expect(filterByName).toBeInTheDocument();
         fireEvent.change(filterByName.children[0],
             { target: { value: 'test'}});
+        fireEvent.change(filterByName.children[0],
+            { target: { value: ''}});
     });
 });

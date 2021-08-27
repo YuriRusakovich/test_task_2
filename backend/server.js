@@ -1,8 +1,10 @@
-require('dotenv').config();
-
-const express = require('express');
-const cors = require('cors');
-const logger = require('./logger');
+import dotenv from 'dotenv';
+dotenv.config();
+import db from './models';
+import express from 'express';
+import cors from 'cors';
+import logger from './logger';
+import routes from './routes/user.routes';
 
 const app = express()
 const port = process.env.PORT;
@@ -19,26 +21,22 @@ app.use(
     })
 );
 
-const db = require("./models");
-
 db.sequelize.sync();
 
-require("./routes/user.routes")(app);
+routes(app);
 
-// Capture 500 errors
-app.use((err,req,res,next) => {
+app.use((err,req,res,next,) => {
     res.status(500).send('Internal server error');
-    logger.error(`${err.status || 500} - ${res.statusMessage} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-})
-
-// Capture 404 errors
-app.use((req,res,next) => {
-    res.status(404).send("Page not found");
-    logger.error(`404 || ${res.statusMessage} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-})
-
-app.listen(port, () => {
-    logger.info(
-        `Server started listening http://localhost:${port}`,
-        { port: port } );
+    logger.internalError(err, res, req);
 });
+
+app.use((req,res) => {
+    res.status(404).send('Page not found');
+    logger.notFound(res, req);
+});
+
+const server = app.listen(port, () => {
+    logger.connect(port);
+});
+
+module.exports = server;

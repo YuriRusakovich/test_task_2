@@ -1,9 +1,16 @@
-const dbConfig = require("../config/db");
-const Sequelize = require("sequelize").Sequelize;
-const sequelize = new Sequelize(dbConfig.development.database,
-    dbConfig.development.username, dbConfig.development.password, {
-        host: dbConfig.development.host,
-        dialect: dbConfig.development.dialect
+import dotenv from 'dotenv';
+dotenv.config();
+import dbConfig from '../config/config';
+import {Sequelize} from 'sequelize';
+import Users from './user.model';
+
+const env = process.env.NODE_ENV;
+
+const sequelize = new Sequelize(dbConfig[env].database,
+    dbConfig[env].username, dbConfig[env].password, {
+        host: dbConfig[env].host,
+        dialect: dbConfig[env].dialect,
+        logging: env !== 'test'
     });
 
 const db = {};
@@ -11,6 +18,6 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.users = require("./user.model")(sequelize, Sequelize);
+db.users = Users(sequelize, Sequelize);
 
-module.exports = db;
+export default db;

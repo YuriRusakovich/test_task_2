@@ -1,18 +1,12 @@
-import { configureStore, Store } from '@reduxjs/toolkit';
+import { Store } from '@reduxjs/toolkit';
 import React, { ComponentType, ReactElement } from 'react';
 import { Provider } from 'react-redux';
-import rootReducer from "@reduxStore/rootReducer";
 import { BrowserRouter as Router } from "react-router-dom";
 
-export const makeStore = (): Store => {
-    return configureStore({reducer: rootReducer});
-};
-
-const wrapComponent = (Component: ComponentType, store: Store |
-    null = null, props = {}): ReactElement => {
+const wrapComponent = (Component: ComponentType, store: Store, props = {}): ReactElement => {
     return (
         <Router>
-            <Provider store={store || makeStore()}>
+            <Provider store={store}>
                 <Component {...props} />
             </Provider>
         </Router>
