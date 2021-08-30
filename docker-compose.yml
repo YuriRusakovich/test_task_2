@@ -1,0 +1,33 @@
+# docker-compose.yml
+version: "3"
+services:
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    command: npm run serve
+    volumes:
+      - ./backend/:/backend/
+      - /backend/node_modules
+    network_mode: "host"
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1970a
+      POSTGRES_USER: yrusakovich
+      POSTGRES_DB: api
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "9000:9000"
+    command: npm run dev
+    volumes:
+      - ./frontend/:/frontend/
+      - /frontend/node_modules

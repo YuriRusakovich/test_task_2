@@ -61,7 +61,7 @@ class UserController {
             .then((self) => {
                 res.send({
                     result: self[1].dataValues,
-                    message: 'User succesfully updated.'
+                    message: 'User successfully updated.'
                 });
                 logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
             })
@@ -77,7 +77,7 @@ class UserController {
                     .then(() => {
                         res.send({
                             result: data,
-                            message: 'User succesfully deleted.'
+                            message: 'User successfully deleted.'
                         });
                         logger.info(`${res.statusCode} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
                     })

@@ -2,15 +2,40 @@ import dotenv from 'dotenv';
 dotenv.config();
 import db from './models';
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import logger from './logger';
 import routes from './routes/user.routes';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
-const app = express()
+const app = express();
 const port = process.env.PORT;
 const corsOptions = {
-    origin: ['http://localhost:9000', 'http://localhost']
+    origin: ['http://localhost:9000', 'http://localhost', 'http://0.0.0.0:9000']
 };
+
+const swaggerDefinition = {
+    info: {
+        title: 'Test_task_2',
+        version: '1.0.0',
+    },
+    host: 'localhost:3000',
+    basePath: '/'
+};
+
+const options = {
+    swaggerDefinition: swaggerDefinition,
+    apis: ['./routes/user.routes.js'],
+};
+
+const swaggerOptions = {
+    customCss: '.swagger-ui .scheme-container { display: none }'
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOptions));
 
 app.use(cors(corsOptions));
 
