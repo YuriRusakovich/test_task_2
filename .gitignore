@@ -1,9 +1,11 @@
 #Ignore node_modules folder
 frontend/node_modules
 backend/node_modules
+backend-nest/node_modules
 
 #Ignore dist folder
 frontend/dist
+backend-nest/dist
 
 #Ignore .idea folder
 .idea
@@ -11,6 +13,7 @@ frontend/dist
 #Ignore coverage folder
 frontend/coverage
 backend/coverage
+backend-nest/coverage
 
 #Ignore logs folder
 backend/logs
