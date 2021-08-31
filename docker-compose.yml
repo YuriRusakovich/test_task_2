@@ -2,6 +2,7 @@
 version: "3"
 services:
   backend:
+    image: yrusakovich/test_task_2:backend
     build: ./backend
     depends_on:
       - db
@@ -9,14 +10,14 @@ services:
       NODE_ENV: development
     ports:
       - "3000:3000"
-    command: npm run serve
+    command: npm run start
     volumes:
       - ./backend/:/backend/
       - /backend/node_modules
     network_mode: "host"
 
   db:
-    image: postgres
+    image: yrusakovich/test_task_2:postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: 1970a
@@ -24,6 +25,7 @@ services:
       POSTGRES_DB: api
 
   frontend:
+    image: yrusakovich/test_task_2:frontend
     build: ./frontend
     ports:
       - "9000:9000"

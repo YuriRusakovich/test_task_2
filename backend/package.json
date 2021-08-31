@@ -7,6 +7,7 @@
     "serve": "cross-env NODE_ENV=development node -r esm server.js",
     "lint": "eslint --ext .js models config controllers routes utils",
     "test": "cross-env NODE_ENV=test experimental-vm-modules=true jest --runInBand",
+    "start": "concurrently \"npm run db:create\" \"npm run serve\"",
     "db:create": "sequelize-cli db:create",
     "testdb:create": "cross-env NODE_ENV=test sequelize-cli db:create",
     "test:db": "concurrently \"npm run testdb:create\" \"npm run test\""
