@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "",
   "author": "Yury Rusakovich",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuriRusakovich/test_task_2.git"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
