@@ -3,7 +3,6 @@ import { gql } from 'apollo-server-express';
 export default gql`
     extend type Query {
         users(orderBy: OrderUsersById): [User!]
-        leaders(limit: Int, orderBy: OrderUsersByRating): [User!]
         user(id: ID!): User
     }
 
@@ -25,10 +24,6 @@ export default gql`
 
     input OrderUsersById {
         id: Sort
-    }
-
-    input OrderUsersByRating {
-        rating: Sort
     }
 
     enum Sort {

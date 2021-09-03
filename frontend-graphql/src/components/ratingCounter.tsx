@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Plus, Minus } from '@styled-icons/typicons';
-import { DocumentNode } from 'graphql';
-import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo';
+import { updateUserMutation } from '@constants/mutations/updateUserMutation';
+import { usersQuery } from '@constants/queries/usersQuery';
 
 interface Props {
     user: User;
@@ -43,39 +43,28 @@ const RatingCounterText = styled.span`
     font-weight: bold;
 `;
 
-const updateUserById: DocumentNode = gql`
-    mutation Mutation($id: ID!, $rating: Int!) {
-        updateUser(id: $id, rating: $rating) {
-            id
-            name
-            photo
-            large_photo
-            login
-            email
-            phone
-            rating
-        }
-    }
-`;
-
-const getLeaders: DocumentNode = gql`
-    {
-        leaders(limit: 5, orderBy: { rating: desc }) {
-            id
-            name
-            large_photo
-            login
-            photo
-            email
-            phone
-            rating
-        }
-    }
-`;
-
 const RatingCounter: React.FC<Props> = ({ user }) => {
-    const [updateUser] = useMutation(updateUserById, {
-        refetchQueries: [{ query: getLeaders }],
+    const [updateUser] = useMutation(updateUserMutation, {
+        update(cache, mutationResult) {
+            try {
+                const updatedUser = mutationResult.data.updateUser;
+                const data: { users?: User[] } | null = cache.readQuery({
+                    query: usersQuery,
+                    variables: { orderBy: { id: 'asc' } },
+                });
+                if (data && data.users) {
+                    const foundIndex = data.users.findIndex(
+                        (leader) => leader.id === updatedUser.id,
+                    );
+                    data.users[foundIndex] = updatedUser;
+                    cache.writeQuery({
+                        query: usersQuery,
+                        variables: { orderBy: { id: 'asc' } },
+                        data,
+                    });
+                }
+            } catch {}
+        },
     });
     const { rating } = user;
 

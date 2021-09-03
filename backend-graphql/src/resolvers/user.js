@@ -5,15 +5,6 @@ export default {
                 order: [['id', args.orderBy.id]],
             });
         },
-        leaders: async (parent, args, { models }) => {
-            return await models.User.findAll({
-                order: [
-                    ['rating', args.orderBy.rating],
-                    ['name', 'asc'],
-                ],
-                limit: args.limit,
-            });
-        },
         user: async (parent, { id }, { models }) => {
             return await models.User.findByPk(id);
         },

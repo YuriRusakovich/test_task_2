@@ -8,5 +8,6 @@ module.exports = {
     moduleNameMapper: {
         '@components(.*)': '<rootDir>/src/components/$1',
         '@pages(.*)': '<rootDir>/src/pages/$1',
+        '@constants(.*)': '<rootDir>/src/constants/$1',
     },
 };

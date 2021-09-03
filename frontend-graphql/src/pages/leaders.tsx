@@ -1,25 +1,9 @@
 import React from 'react';
 import UserTable from '@components/usersTable';
-import { DocumentNode } from 'graphql';
-import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
-
-const getLeaders: DocumentNode = gql`
-    {
-        leaders(limit: 5, orderBy: { rating: desc }) {
-            id
-            name
-            large_photo
-            login
-            photo
-            email
-            phone
-            rating
-        }
-    }
-`;
+import { usersQuery } from '@constants/queries/usersQuery';
 
 const LoadingContainer = styled.div`
     margin: 0 auto;
@@ -27,7 +11,7 @@ const LoadingContainer = styled.div`
 `;
 
 const Leaders: React.FC = () => {
-    const { loading, error, data } = useQuery(getLeaders);
+    const { loading, error, data } = useQuery(usersQuery);
     if (loading) {
         return <LoadingContainer>Loading... </LoadingContainer>;
     }
@@ -35,7 +19,18 @@ const Leaders: React.FC = () => {
         return <Redirect to="/404" />;
     }
 
-    return <UserTable title="Users" users={data.leaders} />;
+    let leaders: User[] = [...data.users].sort((a: User, b: User) => {
+        if (a.rating === b.rating) {
+            return a.name > b.name ? 1 : -1;
+        }
+        return b.rating - a.rating;
+    });
+
+    if (leaders.length >= 5) {
+        leaders = [...leaders].slice(0, 5);
+    }
+
+    return <UserTable title="Users" users={leaders} />;
 };
 
 export default Leaders;

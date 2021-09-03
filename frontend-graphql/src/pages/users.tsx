@@ -1,25 +1,9 @@
 import React from 'react';
 import UserTable from '@components/usersTable';
-import { DocumentNode } from 'graphql';
-import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
-
-const getUsers: DocumentNode = gql`
-    {
-        users(orderBy: { id: asc }) {
-            id
-            name
-            large_photo
-            login
-            photo
-            email
-            phone
-            rating
-        }
-    }
-`;
+import { usersQuery } from '@constants/queries/usersQuery';
 
 const LoadingContainer = styled.div`
     margin: 0 auto;
@@ -27,7 +11,7 @@ const LoadingContainer = styled.div`
 `;
 
 const Users: React.FC = () => {
-    const { loading, error, data } = useQuery(getUsers);
+    const { loading, error, data } = useQuery(usersQuery);
     if (loading) {
         return <LoadingContainer>Loading... </LoadingContainer>;
     }

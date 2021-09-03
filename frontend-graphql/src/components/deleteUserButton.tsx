@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { UserDelete } from '@styled-icons/typicons';
 import { useHistory } from 'react-router-dom';
-import gql from 'graphql-tag';
-import { DocumentNode } from 'graphql';
 import { useMutation } from 'react-apollo';
+import { deleteUserMutation } from '@constants/mutations/deleteUserMutation';
+import { usersQuery } from '@constants/queries/usersQuery';
 
 interface Props {
     user: User;
@@ -21,14 +21,25 @@ const DeleteButton = styled(UserDelete)`
     }
 `;
 
-const deleteUserById: DocumentNode = gql`
-    mutation Mutation($id: ID!) {
-        deleteUser(id: $id)
-    }
-`;
-
 const DeleteUserButton: React.FC<Props> = ({ user }) => {
-    const [deleteUser, { loading, error }] = useMutation(deleteUserById);
+    const [deleteUser, { loading, error }] = useMutation(deleteUserMutation, {
+        update(cache) {
+            try {
+                const data: { users?: User[] } | null = cache.readQuery({
+                    query: usersQuery,
+                    variables: { orderBy: { id: 'asc' } },
+                });
+                if (data && data.users) {
+                    data.users = data.users.filter((g) => user.id !== g.id);
+                    cache.writeQuery({
+                        query: usersQuery,
+                        variables: { orderBy: { id: 'asc' } },
+                        data,
+                    });
+                }
+            } catch {}
+        },
+    });
 
     const history = useHistory();
 

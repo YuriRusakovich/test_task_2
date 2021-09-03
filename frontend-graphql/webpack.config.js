@@ -22,6 +22,7 @@ const config = {
         alias: {
             '@components': resolve(__dirname, './src/components'),
             '@pages': resolve(__dirname, './src/pages'),
+            '@constants': resolve(__dirname, './src/constants'),
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },

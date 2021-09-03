@@ -6,8 +6,11 @@ import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
 import createUsers from './services';
+import apolloWinstonLoggingPlugin from 'apollo-winston-logging-plugin';
+import { logger } from './services/logger';
 
 const port = process.env.PORT;
+
 (async () => {
     const app = express();
 
@@ -19,6 +22,11 @@ const port = process.env.PORT;
         context: {
             models,
         },
+        plugins: [
+            apolloWinstonLoggingPlugin({
+                winstonInstance: logger,
+            }),
+        ],
     });
 
     await server.start();
