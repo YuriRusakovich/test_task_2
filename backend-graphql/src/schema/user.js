@@ -4,11 +4,13 @@ export default gql`
     extend type Query {
         users(orderBy: OrderUsersById): [User!]
         user(id: ID!): User
+        me: User
     }
 
     extend type Mutation {
         deleteUser(id: ID!): Boolean!
         updateUser(id: ID!, rating: Int!): User
+        signIn(login: String!): Token!
     }
 
     type User {
@@ -20,6 +22,10 @@ export default gql`
         email: String!
         phone: String!
         rating: Int!
+    }
+
+    type Token {
+        token: String!
     }
 
     input OrderUsersById {

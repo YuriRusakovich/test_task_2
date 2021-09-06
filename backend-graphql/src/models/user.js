@@ -1,5 +1,5 @@
 const user = (sequelize, Sequelize) => {
-    return sequelize.define('user', {
+    const User = sequelize.define('user', {
         name: {
             type: Sequelize.STRING,
         },
@@ -22,6 +22,14 @@ const user = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
         },
     });
+
+    User.findByLogin = async (login) => {
+        return await User.findOne({
+            where: { login: login },
+        });
+    };
+
+    return User;
 };
 
 export default user;

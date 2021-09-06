@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import LoginMenuItem from '@components/loginMenuItem';
 
 const Navigation = styled.ul`
     display: flex;
@@ -9,7 +10,8 @@ const Navigation = styled.ul`
     -webkit-overflow-scrolling: touch;
     margin: 0;
     padding: 0;
-    justify-content: center;
+    justify-content: flex-end;
+    background: burlywood;
 `;
 
 const NavigationItem = styled.li`
@@ -18,19 +20,14 @@ const NavigationItem = styled.li`
     -webkit-box-pack: center;
     -webkit-tap-highlight-color: transparent;
     align-items: center;
-    color: #999;
     justify-content: center;
     text-decoration: none;
     display: flex;
+    height: 30px;
     font-size: 14px;
     font-weight: bold;
-    height: 25px;
-    line-height: 16px;
-    margin: 10px;
     padding: 0 5px;
     white-space: nowrap;
-    border: 2px solid black;
-    border-radius: 5px;
 
     :hover {
         background: bisque;
@@ -51,6 +48,7 @@ const Header: React.FC = () => {
             <NavigationItem>
                 <Link to="/leaders">Leaders</Link>
             </NavigationItem>
+            <LoginMenuItem />
         </Navigation>
     );
 };

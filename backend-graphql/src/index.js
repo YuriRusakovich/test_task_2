@@ -8,6 +8,7 @@ import models, { sequelize } from './models';
 import createUsers from './services';
 import apolloWinstonLoggingPlugin from 'apollo-winston-logging-plugin';
 import { logger } from './services/logger';
+import jwt from 'jsonwebtoken';
 
 const port = process.env.PORT;
 
@@ -16,17 +17,29 @@ const port = process.env.PORT;
 
     app.use(cors());
 
+    const getMe = async (req) => {
+        const token = req.headers['x-token'];
+
+        if (token) {
+            try {
+                return await jwt.verify(JSON.parse(token), process.env.SECRET);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
+
     const server = new ApolloServer({
         typeDefs: schema,
         resolvers,
-        context: {
-            models,
+        context: async ({ req }) => {
+            const me = await getMe(req);
+            return {
+                models,
+                me,
+                secret: process.env.SECRET,
+            };
         },
-        plugins: [
-            apolloWinstonLoggingPlugin({
-                winstonInstance: logger,
-            }),
-        ],
     });
 
     await server.start();

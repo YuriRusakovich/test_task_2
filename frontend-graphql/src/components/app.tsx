@@ -11,6 +11,7 @@ import {
 import Header from '@components/header';
 import User from '@pages/user';
 import { createGlobalStyle } from 'styled-components';
+import Login from '@pages/login';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                 <Route exact path="/users" component={Users} />
                 <Route exact path="/user/:id" component={User} />
                 <Route path="/leaders" component={Leaders} />
+                <Route path="/login" component={Login} />
                 <Route path="/404" component={Error404} />
                 <Redirect to="/404" />
             </Switch>
