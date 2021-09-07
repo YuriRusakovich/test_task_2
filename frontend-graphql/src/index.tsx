@@ -6,6 +6,9 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { setContext } from 'apollo-link-context';
+import { onError } from 'apollo-link-error';
+
+const cache = new InMemoryCache();
 
 const GRAPHQL_BASE_URL = 'http://localhost:3000/graphql';
 
@@ -23,10 +26,23 @@ const authLink = setContext((_, { headers }) => {
     };
 });
 
-const cache = new InMemoryCache();
+const errorLink = onError(({ networkError, graphQLErrors }) => {
+    if (networkError) {
+        console.log(networkError.message);
+    }
+
+    if (graphQLErrors) {
+        for (const err of graphQLErrors) {
+            switch (err.extensions?.code) {
+                case 'UNAUTHENTICATED':
+                    localStorage.removeItem('Token');
+            }
+        }
+    }
+});
 
 const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: errorLink.concat(authLink).concat(httpLink),
     cache,
 });
 

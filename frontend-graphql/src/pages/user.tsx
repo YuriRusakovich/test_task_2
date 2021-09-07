@@ -13,7 +13,9 @@ const LoadingContainer = styled.div`
 const User: React.FC = () => {
     const { pathname } = useLocation();
     const userId = pathname.replace('/user/', '');
-    const { loading, error, data } = useQuery(userQuery(parseInt(userId)));
+    const { loading, error, data } = useQuery(userQuery, {
+        variables: { userId: parseInt(userId) },
+    });
     if (loading) {
         return <LoadingContainer>Loading... </LoadingContainer>;
     }

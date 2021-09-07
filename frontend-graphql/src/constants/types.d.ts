@@ -21,6 +21,18 @@ interface User {
     phone: string;
     rating: number;
     large_photo?: string;
+    messages?: Message[];
+}
+
+interface Message {
+    id: string;
+    text: string;
+    createdAt: string;
+    user: {
+        id: string;
+        name: string;
+        photo: string;
+    };
 }
 
 interface SpanProps {

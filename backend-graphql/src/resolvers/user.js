@@ -35,4 +35,14 @@ export default {
             return { token: await createToken(user, secret, '30m') };
         },
     },
+
+    User: {
+        messages: async (user, args, { models }) => {
+            return await models.Message.findAll({
+                where: {
+                    sendTo: user.id,
+                },
+            });
+        },
+    },
 };

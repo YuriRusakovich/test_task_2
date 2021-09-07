@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import RatingCounter from '@components/ratingCounter';
 import DeleteUserButton from '@components/deleteUserButton';
+import MessageList from '@components/messageList';
 
 interface Props {
     user: User | undefined;
@@ -102,6 +103,8 @@ const UserCard: React.FC<Props> = ({ user }) => {
                         <CardHeading>Actions</CardHeading>
                         <DeleteUserButton user={user} />
                     </CardBody>
+
+                    <MessageList user={user} />
                 </CardWrapper>
             )}
         </>

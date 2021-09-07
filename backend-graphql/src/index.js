@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
@@ -24,7 +24,9 @@ const port = process.env.PORT;
             try {
                 return await jwt.verify(JSON.parse(token), process.env.SECRET);
             } catch (e) {
-                console.error(e);
+                throw new AuthenticationError(
+                    'Your session expired. Sign in again.',
+                );
             }
         }
     };

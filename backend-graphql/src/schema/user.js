@@ -22,6 +22,7 @@ export default gql`
         email: String!
         phone: String!
         rating: Int!
+        messages: [Message!]
     }
 
     type Token {

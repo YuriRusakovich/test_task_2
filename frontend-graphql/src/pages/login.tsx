@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExecutionResult, useMutation, useQuery } from 'react-apollo';
 import { signInMutation } from '@constants/mutations/signInMutation';
 import { me } from '@constants/queries/meQuery';
@@ -49,10 +49,16 @@ const ErrorMessage = styled.div`
 
 const Login: React.FC = () => {
     const [login, setLogin] = useState({ login: '' });
-    const [error, setError] = useState({ message: '' });
+    const [errors, setErrors] = useState({ message: '' });
     const history = useHistory();
-    const [signIn] = useMutation(signInMutation);
+    const [signIn, { error }] = useMutation(signInMutation);
     const { client } = useQuery(me);
+
+    useEffect(() => {
+        if (error) {
+            setErrors({ message: 'User with that login is not exist.' });
+        }
+    }, [error]);
 
     return (
         <PageWrapper>
@@ -64,17 +70,17 @@ const Login: React.FC = () => {
                 placeholder="Login"
                 onChange={(e) => {
                     if (e.target.value) {
-                        setError({ message: '' });
+                        setErrors({ message: '' });
                     }
                     setLogin({ login: e.target.value });
                 }}
             />
-            {error.message && <ErrorMessage>{error.message}</ErrorMessage>}
+            {errors.message && <ErrorMessage>{errors.message}</ErrorMessage>}
             <br />
             <FormButton
                 onClick={() => {
                     if (!login.login) {
-                        setError({ message: 'That field is required' });
+                        setErrors({ message: 'That field is required' });
                     } else {
                         signIn({
                             variables: {

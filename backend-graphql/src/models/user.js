@@ -23,6 +23,10 @@ const user = (sequelize, Sequelize) => {
         },
     });
 
+    User.associate = (models) => {
+        User.hasMany(models.Message, { onDelete: 'CASCADE' });
+    };
+
     User.findByLogin = async (login) => {
         return await User.findOne({
             where: { login: login },

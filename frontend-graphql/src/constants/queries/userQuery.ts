@@ -1,9 +1,9 @@
 import { DocumentNode } from 'graphql';
 import gql from 'graphql-tag';
 
-export const userQuery: (id: number) => DocumentNode = (id: number) => gql`
-    {
-        user(id: ${id}) {
+export const userQuery: DocumentNode = gql`
+    query Query($userId: ID!) {
+        user(id: $userId) {
             id
             name
             photo
@@ -12,6 +12,16 @@ export const userQuery: (id: number) => DocumentNode = (id: number) => gql`
             email
             phone
             rating
+            messages {
+                id
+                text
+                createdAt
+                user {
+                    id
+                    name
+                    photo
+                }
+            }
         }
     }
 `;
