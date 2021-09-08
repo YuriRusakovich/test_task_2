@@ -112,6 +112,8 @@ function Table({ columns, data }: TableOptions): JSX.Element {
                 columns,
                 data,
                 defaultColumn,
+                autoResetFilters: false,
+                autoResetSortBy: false,
             },
             useFilters,
             useSortBy,

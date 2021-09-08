@@ -28,6 +28,9 @@ interface Message {
     id: string;
     text: string;
     createdAt: string;
+    owner: {
+        id: string;
+    };
     user: {
         id: string;
         name: string;
@@ -41,4 +44,8 @@ interface SpanProps {
 
 interface TableRowProps {
     rating?: boolean | undefined | 0;
+}
+
+interface BackgroundProps {
+    show: boolean;
 }

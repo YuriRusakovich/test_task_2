@@ -15,8 +15,12 @@ const Leaders: React.FC = () => {
     if (loading) {
         return <LoadingContainer>Loading... </LoadingContainer>;
     }
-    if (error) {
+    if (error && !error.networkError?.message) {
         return <Redirect to="/404" />;
+    }
+
+    if (error && error.networkError?.message) {
+        return <Redirect to="/500" />;
     }
 
     let leaders: User[] = [...data.users].sort((a: User, b: User) => {

@@ -26,11 +26,7 @@ const authLink = setContext((_, { headers }) => {
     };
 });
 
-const errorLink = onError(({ networkError, graphQLErrors }) => {
-    if (networkError) {
-        console.log(networkError.message);
-    }
-
+const errorLink = onError(({ graphQLErrors }) => {
     if (graphQLErrors) {
         for (const err of graphQLErrors) {
             switch (err.extensions?.code) {

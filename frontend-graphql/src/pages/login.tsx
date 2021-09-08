@@ -4,6 +4,7 @@ import { signInMutation } from '@constants/mutations/signInMutation';
 import { me } from '@constants/queries/meQuery';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import ErrorModal from '@components/modals/errorModal';
 
 const PageWrapper = styled.div`
     margin: 0 auto;
@@ -45,69 +46,93 @@ const PageHeader = styled.h2`
 const ErrorMessage = styled.div`
     color: red;
     text-align: center;
+    font-size: 14px;
 `;
 
 const Login: React.FC = () => {
+    const history = useHistory();
+    const token = localStorage.getItem('Token');
+    if (token) {
+        history.push('/users');
+    }
+    const [showModal, setShowModal] = useState(false);
     const [login, setLogin] = useState({ login: '' });
     const [errors, setErrors] = useState({ message: '' });
-    const history = useHistory();
     const [signIn, { error }] = useMutation(signInMutation);
     const { client } = useQuery(me);
 
     useEffect(() => {
         if (error) {
-            setErrors({ message: 'User with that login is not exist.' });
+            setShowModal(true);
+            setLogin({ login: '' });
         }
-    }, [error]);
+    }, [error, setLogin, setShowModal]);
+
+    const closeModal: () => void = () => {
+        setShowModal(false);
+    };
 
     return (
-        <PageWrapper>
-            <PageHeader>Login</PageHeader>
-            <FormInput
-                id="login"
-                type="text"
-                value={login.login}
-                placeholder="Login"
-                onChange={(e) => {
-                    if (e.target.value) {
-                        setErrors({ message: '' });
-                    }
-                    setLogin({ login: e.target.value });
-                }}
-            />
-            {errors.message && <ErrorMessage>{errors.message}</ErrorMessage>}
-            <br />
-            <FormButton
-                onClick={() => {
-                    if (!login.login) {
-                        setErrors({ message: 'That field is required' });
-                    } else {
-                        signIn({
-                            variables: {
-                                signInLogin: login.login,
-                            },
-                        }).then(
-                            async (
-                                data: ExecutionResult<{
-                                    signIn: { token: string };
-                                }>,
-                            ) => {
-                                if (data) {
-                                    localStorage.setItem(
-                                        'Token',
-                                        JSON.stringify(data.data?.signIn.token),
-                                    );
-                                    await client.resetStore();
-                                    history.push('/users');
-                                }
-                            },
-                        );
-                    }
-                }}
-            >
-                Login
-            </FormButton>
-        </PageWrapper>
+        <>
+            <PageWrapper>
+                <PageHeader>Login</PageHeader>
+                <FormInput
+                    id="login"
+                    type="text"
+                    value={login.login}
+                    placeholder="Login"
+                    onChange={(e) => {
+                        if (e.target.value) {
+                            setErrors({ message: '' });
+                        }
+                        setLogin({ login: e.target.value });
+                    }}
+                />
+                {errors.message && (
+                    <ErrorMessage>{errors.message}</ErrorMessage>
+                )}
+                <br />
+                <FormButton
+                    onClick={() => {
+                        if (!login.login) {
+                            setErrors({ message: 'That field is required' });
+                        } else {
+                            signIn({
+                                variables: {
+                                    signInLogin: login.login,
+                                },
+                            }).then(
+                                (
+                                    data: ExecutionResult<{
+                                        signIn: { token: string };
+                                    }>,
+                                ) => {
+                                    if (data) {
+                                        localStorage.setItem(
+                                            'Token',
+                                            JSON.stringify(
+                                                data.data?.signIn.token,
+                                            ),
+                                        );
+                                        client.resetStore().then();
+                                        history.push('/users');
+                                    }
+                                },
+                            );
+                        }
+                    }}
+                >
+                    Login
+                </FormButton>
+            </PageWrapper>
+            {error && (
+                <ErrorModal
+                    error={error}
+                    show={showModal}
+                    onClose={closeModal}
+                />
+            )}
+        </>
     );
 };
 

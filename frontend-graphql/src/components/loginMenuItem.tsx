@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useQuery, useApolloClient } from 'react-apollo';
 import { me } from '@constants/queries/meQuery';
 import styled from 'styled-components';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, useHistory } from 'react-router-dom';
 import { Power } from '@styled-icons/typicons';
 
 const NavigationItem = styled.li`
@@ -73,7 +73,8 @@ const NavigationLogout = styled(Power)`
 const LoginMenuItem: React.FC = () => {
     const ref = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
-    const { loading, error, data } = useQuery(me);
+    const { loading, error, data, refetch } = useQuery(me);
+    const history = useHistory();
     const client = useApolloClient();
 
     useEffect(() => {
@@ -97,13 +98,34 @@ const LoginMenuItem: React.FC = () => {
     if (loading) {
         return <NavigationItem>loading...</NavigationItem>;
     }
-    if (error) {
+    if (error && !error.networkError?.message) {
         return (
             <>
                 <NavigationItem>
                     <NavigationLink to="/login">Login</NavigationLink>
                 </NavigationItem>
-                <Redirect to={'/users'} />
+            </>
+        );
+    }
+
+    if (error) {
+        const interval = setInterval(() => {
+            refetch()
+                .then(() => {
+                    clearInterval(interval);
+                    history.push('/users');
+                })
+                .catch((err) => {
+                    if (!err.networkError?.message) {
+                        clearInterval(interval);
+                        history.push('/users');
+                    }
+                });
+        }, 2000);
+        return (
+            <>
+                <NavigationItem>loading...</NavigationItem>
+                <Redirect to={'/500'} />
             </>
         );
     }

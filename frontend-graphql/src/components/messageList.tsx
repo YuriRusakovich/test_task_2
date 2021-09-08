@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import { ExecutionResult, useMutation } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import { createMessageMutation } from '@constants/mutations/createMessageMutation';
 import MessageItem from '@components/messageItem';
 import { userQuery } from '@constants/queries/userQuery';
+import ErrorModal from '@components/modals/errorModal';
 
 interface Props {
     user: User;
@@ -55,31 +56,32 @@ const FormButton = styled.button`
 const ErrorMessage = styled.div`
     color: red;
     text-align: center;
+    font-size: 14px;
 `;
 
 const ListWrapper = styled.div`
     position: relative;
     overflow-y: scroll;
     max-height: 200px;
+    box-shadow: inset 0 0 15px 10px rgba(219, 161, 103, 0.3);
     width: 400px;
+    background: rgba(219, 161, 103, 0.1);
+
     &::-webkit-scrollbar {
         width: 0.4em;
     }
-    ,
-    &::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-    }
-    ,
+
     &::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.1);
+        background: rgba(219, 161, 103, 0.5);
         border-radius: 4px;
     }
 `;
 
 const MessageList: React.FC<Props> = ({ user }) => {
+    const [showModal, setShowModal] = useState(false);
     const [message, setMessage] = useState({ message: '' });
     const [errors, setErrors] = useState({ message: '' });
+    const [messages, setMessages] = useState(user.messages);
     const [createMessage, { error }] = useMutation(createMessageMutation, {
         update(cache, mutationResult) {
             try {
@@ -99,61 +101,90 @@ const MessageList: React.FC<Props> = ({ user }) => {
             } catch {}
         },
     });
+
     useEffect(() => {
         if (error) {
-            setErrors({ message: 'You need to be authorized.' });
+            setShowModal(true);
+            setMessage({ message: '' });
         }
-    }, [error]);
+    }, [error, setShowModal, setMessage]);
+
+    const handleDelete: () => void = () => {
+        setMessages(user.messages);
+    };
+
+    const closeModal: () => void = () => {
+        setShowModal(false);
+    };
+
     return (
-        <CardWrapper>
-            <FormInput
-                id="message"
-                type="text"
-                value={message.message}
-                placeholder="Message"
-                onChange={(e) => {
-                    if (e.target.value) {
-                        setErrors({ message: '' });
-                    }
-                    setMessage({ message: e.target.value });
-                }}
-            />
-            {errors.message && <ErrorMessage>{errors.message}</ErrorMessage>}
-            <FormButton
-                onClick={() => {
-                    if (!message.message) {
-                        setErrors({ message: 'That field is required.' });
-                    } else {
-                        createMessage({
-                            variables: {
-                                createMessageText: message.message,
-                                createMessageId: parseInt(user.id),
-                            },
-                        }).then(() => {
-                            setMessage({ message: '' });
-                        });
-                    }
-                }}
-            >
-                Add message
-            </FormButton>
-            {user.messages && user.messages.length > 0 && (
-                <ListWrapper>
-                    {user.messages
-                        .sort((a: Message, b: Message) => {
-                            return (
-                                parseInt(b.createdAt) - parseInt(a.createdAt)
-                            );
-                        })
-                        .map((item: Message) => {
-                            return <MessageItem key={item.id} message={item} />;
-                        })}
-                </ListWrapper>
+        <>
+            <CardWrapper>
+                <FormInput
+                    id="message"
+                    type="text"
+                    value={message.message}
+                    placeholder="Message"
+                    onChange={(e) => {
+                        if (e.target.value) {
+                            setErrors({ message: '' });
+                        }
+                        setMessage({ message: e.target.value });
+                    }}
+                />
+                {errors.message && (
+                    <ErrorMessage>{errors.message}</ErrorMessage>
+                )}
+                <FormButton
+                    onClick={() => {
+                        if (!message.message) {
+                            setErrors({ message: 'That field is required.' });
+                        } else {
+                            createMessage({
+                                variables: {
+                                    createMessageText: message.message,
+                                    createMessageId: parseInt(user.id),
+                                },
+                            }).then(() => {
+                                setMessage({ message: '' });
+                            });
+                        }
+                    }}
+                >
+                    Add message
+                </FormButton>
+                {messages && messages.length > 0 && (
+                    <ListWrapper>
+                        {messages
+                            .sort((a: Message, b: Message) => {
+                                return (
+                                    parseInt(b.createdAt) -
+                                    parseInt(a.createdAt)
+                                );
+                            })
+                            .map((item: Message) => {
+                                return (
+                                    <MessageItem
+                                        key={item.id}
+                                        message={item}
+                                        onDelete={handleDelete}
+                                    />
+                                );
+                            })}
+                    </ListWrapper>
+                )}
+                {messages && !messages.length && (
+                    <div>There are no messages</div>
+                )}
+            </CardWrapper>
+            {error && (
+                <ErrorModal
+                    error={error}
+                    show={showModal}
+                    onClose={closeModal}
+                />
             )}
-            {user.messages && !user.messages.length && (
-                <div>There are no messages</div>
-            )}
-        </CardWrapper>
+        </>
     );
 };
 

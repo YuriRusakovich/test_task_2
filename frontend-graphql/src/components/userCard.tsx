@@ -68,6 +68,14 @@ const CardRating = styled.div`
     justify-content: center;
 `;
 
+const Hr = styled.hr`
+    border: none;
+    height: 1px;
+    color: black;
+    background-color: black;
+    width: 100%;
+`;
+
 const UserCard: React.FC<Props> = ({ user }) => {
     return (
         <>
@@ -84,7 +92,7 @@ const UserCard: React.FC<Props> = ({ user }) => {
                         </CardContent>
                     </CardHeader>
                     <CardBody>
-                        <hr />
+                        <Hr />
                         <CardHeading>Contacts</CardHeading>
                         <CardRow>
                             <CardRowContent bold>Email:</CardRowContent>
@@ -94,12 +102,12 @@ const UserCard: React.FC<Props> = ({ user }) => {
                             <CardRowContent bold>Phone:</CardRowContent>
                             <CardRowContent>{user.phone}</CardRowContent>
                         </CardRow>
-                        <hr />
+                        <Hr />
                         <CardHeading>Rating</CardHeading>
                         <CardRating>
                             <RatingCounter user={user} />
                         </CardRating>
-                        <hr />
+                        <Hr />
                         <CardHeading>Actions</CardHeading>
                         <DeleteUserButton user={user} />
                     </CardBody>

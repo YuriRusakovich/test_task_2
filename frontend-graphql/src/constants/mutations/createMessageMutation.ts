@@ -12,6 +12,9 @@ export const createMessageMutation: DocumentNode = gql`
                 name
                 photo
             }
+            owner {
+                id
+            }
         }
     }
 `;

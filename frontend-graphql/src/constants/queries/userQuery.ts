@@ -21,6 +21,9 @@ export const userQuery: DocumentNode = gql`
                     name
                     photo
                 }
+                owner {
+                    id
+                }
             }
         }
     }

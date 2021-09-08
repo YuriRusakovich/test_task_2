@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { UserInputError } from 'apollo-server-express';
 
 const createToken = async (user, secret, expiresIn) => {
     const { id, email, name, photo } = user;
@@ -32,6 +33,11 @@ export default {
         },
         signIn: async (parent, { login }, { models, secret }) => {
             const user = await models.User.findByLogin(login);
+            if (!user) {
+                throw new UserInputError(
+                    'No user found with this login credentials.',
+                );
+            }
             return { token: await createToken(user, secret, '30m') };
         },
     },
